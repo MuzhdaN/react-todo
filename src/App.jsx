@@ -23,6 +23,11 @@ function App() {
   function addTodo(newTodo) {
     setTodoList([...todoList, newTodo]);
   }
+
+  function removeTodo(id) {
+    const newTodoList = todoList.filter((todo) => todo.id !==id);
+    setTodoList(newTodoList)
+  }
   
   return (
     <>
@@ -32,6 +37,7 @@ function App() {
       />
       <TodoList
         todoList={todoList}
+        onRemoveTodo={removeTodo}
       />
     </>
   )
