@@ -6,7 +6,6 @@ const InputWithLabel = ({todoTitle, handleTitleChange, children}) => {
 
     useEffect(() => {
         inputRef.current.focus();
-
     });
 
     return (    
