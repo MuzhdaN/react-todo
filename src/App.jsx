@@ -5,7 +5,7 @@ import TodoList from './TodoList'
 
 function useSemiPersistentState(){
 
-  const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem('savedTodoList')) || [] );
+  const [todoList, setTodoList] = useState(JSON.parse(localStorage.getItem('savedTodoList')) || []);
 
   useEffect(() => {
 
