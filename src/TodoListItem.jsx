@@ -1,11 +1,8 @@
-function TodoListItem({todo, onRemoveTodo}) {
-
+function TodoListItem({todo}) {
+    
     return(   
-        <li> 
-            {todo.title}
-            <button onClick={() => onRemoveTodo(todo.id)}> Remove </button>
-        </li>
+        <li> {todo.title} </li>
     )
 }
 
-export default TodoListItem;
+export default TodoListItem

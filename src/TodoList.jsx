@@ -1,6 +1,6 @@
 import TodoListItem from "./TodoListItem"
 
-function TodoList({todoList, onRemoveTodo}) {
+function TodoList({todoList}) {
     return (
       <>
         <ul>
@@ -9,7 +9,6 @@ function TodoList({todoList, onRemoveTodo}) {
                   <TodoListItem
                     key={todo.id}
                     todo={todo}
-                    onRemoveTodo={onRemoveTodo}
                   />
                 )
             })}
@@ -19,4 +18,4 @@ function TodoList({todoList, onRemoveTodo}) {
     )
 }  
 
-export default TodoList;
+export default TodoList
