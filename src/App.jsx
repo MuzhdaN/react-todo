@@ -8,7 +8,6 @@ function App() {
   const [todoList, setTodoList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-    // Create a new async function fetchData
   const fetchData = async () => {
     const options = {
       method: 'GET',
@@ -17,30 +16,31 @@ function App() {
       },
     };
   
-      const url = `https://api.airtable.com/v0/${import.meta.env.VITE_AIRTABLE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
+    const url = `https://api.airtable.com/v0/${import.meta.env.VITE_AIRTABLE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
   
-      try {
-        const response = await fetch(url, options);
+    try {
+      const response = await fetch(url, options);
   
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-  
-        const data = await response.json();
-
-        const todos = data.records.map(record => ({
-          id: record.id,
-          title: record.fields.title,
-        }));
-
-        setTodoList(todos);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error.message);
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
       }
-    };
+  
+      const data = await response.json();
 
-   useEffect(() => {
+      const todos = data.records.map(record => ({
+        id: record.id,
+        title: record.fields.title,
+      }));
+
+      setTodoList(todos);
+      setIsLoading(false);
+      
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
   
@@ -61,7 +61,6 @@ function App() {
   
   return (
     <>
-
       <h1> Todo List </h1>
       <AddTodoForm 
         onAddTodo={addTodo}
