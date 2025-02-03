@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import AddTodoForm from './AddTodoForm'
 import './App.css'
 import TodoList from './TodoList'
@@ -44,35 +45,96 @@ function App() {
     fetchData();
   }, []);
   
-  useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem('savedTodoList', JSON.stringify(todoList));
-    }
-  }, [todoList]);
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     localStorage.setItem('savedTodoList', JSON.stringify(todoList));
+  //   }
+  // }, [todoList]);
 
-  function addTodo(newTodo) {
-    setTodoList([...todoList, newTodo]);
+
+  async function addTodo(newTodo) {
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_AIRTABLE_API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fields: {
+            title: newTodo.title,
+          },
+        }),
+      };
+  
+      const url = `https://api.airtable.com/v0/${import.meta.env.VITE_AIRTABLE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}`;
+  
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+  
+      const data = await response.json();
+ 
+      const airtableId = data.id;
+  
+      //update the newTodo object with the airtable id
+      newTodo.id = airtableId;
+  
+      setTodoList([...todoList, newTodo]);
+  
+    } catch (error) {
+      console.error("Error adding todo item:", error);
+    }
   }
 
-  function removeTodo(id) {
-    const newTodoList = todoList.filter((todo) => todo.id !==id);
-    setTodoList(newTodoList)
+  async function removeTodo(id) {
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_AIRTABLE_API_TOKEN}`,
+        },
+      };
+  
+      const url = `https://api.airtable.com/v0/${import.meta.env.VITE_AIRTABLE_BASE_ID}/${import.meta.env.VITE_TABLE_NAME}/${id}`; // 
+
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+
+      const newTodoList = todoList.filter((todo) => todo.id !==id);
+      setTodoList(newTodoList)
+  
+    } catch (error) {
+      console.error("Error deleting todo item:", error);
+    }
   }
   
   return (
-    <>
-      <h1> Todo List </h1>
-      <AddTodoForm 
-        onAddTodo={addTodo}
-      />
-      {isLoading ? (<p>Loading...</p>) 
-      : (
-        <TodoList
-          todoList={todoList}
-          onRemoveTodo={removeTodo}
-        />
-      )}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={
+          <>
+            <h1> Todo List </h1>
+            <AddTodoForm 
+              onAddTodo={addTodo}
+            />
+            {isLoading ? (<p>Loading...</p>) 
+            : (
+              <TodoList
+                todoList={todoList}
+                onRemoveTodo={removeTodo}
+              />
+            )}
+          </>
+        }/>
+        <Route path='/new' element={<h1>New Todo List</h1>}/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
